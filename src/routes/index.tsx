@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { capabilities } from "@/lib/demo-data";
 
@@ -21,6 +21,18 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
+
+  // Already signed in? Go straight to the workspace.
+  useEffect(() => {
+    let active = true;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active && data.session) void navigate({ to: "/dashboard", replace: true });
+    });
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
