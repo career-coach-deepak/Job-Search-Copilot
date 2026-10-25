@@ -21,6 +21,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Already signed in? Go straight to the workspace.
@@ -37,13 +38,22 @@ function SignIn() {
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
-    // A magic link to this address. Unknown addresses simply never receive a
-    // link, so the message stays the same either way.
-    await supabase.auth.signInWithOtp({
+    setError(null);
+    // A magic link to this address. Accounts are never created here — only
+    // emails Coach Deepak has invited can receive a link.
+    const { error: sendError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
     });
     setBusy(false);
+    if (sendError) {
+      // Same wording whatever the cause, so the page never confirms whether an
+      // address is on the client list.
+      setError(
+        "We couldn't send a sign-in link to that address. Check the spelling, or contact Coach Deepak if the problem continues.",
+      );
+      return;
+    }
     setSent(true);
   }
 
