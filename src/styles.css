@@ -78,13 +78,11 @@
 @utility bg-ink-gradient { background-image: var(--gradient-ink); }
 @utility shadow-soft { box-shadow: var(--shadow-soft); }
 
-@layer components {
-  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50; }
-  .btn-primary { @apply btn bg-primary text-primary-foreground hover:bg-primary/90; }
-  .btn-accent { @apply btn bg-accent text-accent-foreground hover:bg-accent/90; }
-  .btn-ghost { @apply btn text-foreground hover:bg-secondary; }
-  .btn-outline { @apply btn border border-border bg-card hover:bg-secondary; }
-  .field { @apply w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring; }
-  .panel { @apply rounded-xl border border-border bg-card shadow-soft; }
-  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent; }
-}
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50; }
+@utility btn-primary { @apply btn bg-primary text-primary-foreground hover:bg-primary/90; }
+@utility btn-accent { @apply btn bg-accent text-accent-foreground hover:bg-accent/90; }
+@utility btn-ghost { @apply btn text-foreground hover:bg-secondary; }
+@utility btn-outline { @apply btn border border-border bg-card hover:bg-secondary; }
+@utility field { @apply w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring; }
+@utility panel { @apply rounded-xl border border-border bg-card shadow-soft; }
+@utility eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent; }
