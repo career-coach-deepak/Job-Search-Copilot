@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { computeAccessStatus, type AccessStatus } from "@/lib/access";
+import { accessQueryOptions } from "@/hooks/use-access";
 import { demoClients } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -12,6 +14,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { property: "og:description", content: "Manage client access to the Copilot." },
     ],
   }),
+  loader: async ({ context }) => {
+    const view = await context.queryClient.ensureQueryData(accessQueryOptions);
+    if (!view.isAdmin) throw redirect({ to: "/dashboard" });
+  },
   component: Admin,
 });
 
@@ -22,9 +28,12 @@ const badge: Record<AccessStatus, string> = {
   suspended: "bg-warning/20 text-foreground",
   revoked: "bg-destructive/15 text-destructive",
 };
-const fmt = (d: string) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const fmt = (d: string) =>
+  new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
 function Admin() {
+  const { data: view } = useSuspenseQuery(accessQueryOptions);
+
   return (
     <AppShell>
       <div className="flex items-end justify-between">
@@ -60,7 +69,9 @@ function Admin() {
           </tbody>
         </table>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">Sample clients. Actions activate once the database is connected.</p>
+      <p className="mt-4 text-xs text-muted-foreground">
+        Signed in {view.isAdmin ? "as staff" : "as a client"}. Sample rows — live client management arrives in stage 5.
+      </p>
     </AppShell>
   );
 }
