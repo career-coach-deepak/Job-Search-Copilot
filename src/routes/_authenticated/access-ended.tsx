@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/access-ended")({
   loader: async ({ context }) => {
     const view = await context.queryClient.ensureQueryData(accessQueryOptions);
     if (view.kind === "record" && view.status === "active") throw redirect({ to: "/dashboard" });
+    if (view.isAdmin) throw redirect({ to: "/admin" });
   },
   component: AccessEnded,
 });
