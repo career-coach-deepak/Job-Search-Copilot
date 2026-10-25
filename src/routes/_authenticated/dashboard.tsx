@@ -15,7 +15,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   }),
   loader: async ({ context }) => {
     const view = await context.queryClient.ensureQueryData(accessQueryOptions);
-    if (isBlocked(view)) throw redirect({ to: "/access-ended" });
+    // Coaching staff without their own client program go to the admin area.
+    if (isBlocked(view)) throw redirect({ to: view.isAdmin ? "/admin" : "/access-ended" });
   },
   component: Dashboard,
 });
