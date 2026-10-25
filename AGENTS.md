@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Access rule lives in src/lib/access.ts (computeAccessStatus); server checks and UI must reuse it — single source for the active/upcoming/expired logic.
+- Protected logic uses TanStack server functions, not Supabase Edge Functions — platform standard.
