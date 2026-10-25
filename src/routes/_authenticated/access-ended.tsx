@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brand } from "@/components/AppShell";
 
-export const Route = createFileRoute("/access-ended")({
+export const Route = createFileRoute("/_authenticated/access-ended")({
   head: () => ({
     meta: [
       { title: "Access ended — Job Search Copilot" },

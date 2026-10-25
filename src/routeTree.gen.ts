@@ -10,73 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AccessEndedRouteImport } from './routes/access-ended'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as ChatRouteImport } from './routes/chat'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthenticatedAccessEndedRouteImport } from './routes/_authenticated/access-ended'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccessEndedRoute = AccessEndedRouteImport.update({
-  id: '/access-ended',
-  path: '/access-ended',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
+const AuthenticatedAccessEndedRoute =
+  AuthenticatedAccessEndedRouteImport.update({
+    id: '/_authenticated/access-ended',
+    path: '/access-ended',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/_authenticated/admin',
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/_authenticated/chat',
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/_authenticated/dashboard',
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/access-ended': typeof AccessEndedRoute
-  '/admin': typeof AdminRoute
-  '/chat': typeof ChatRoute
-  '/dashboard': typeof DashboardRoute
+  '/access-ended': typeof AuthenticatedAccessEndedRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/chat': typeof AuthenticatedChatRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/access-ended': typeof AccessEndedRoute
-  '/admin': typeof AdminRoute
-  '/chat': typeof ChatRoute
-  '/dashboard': typeof DashboardRoute
+  '/access-ended': typeof AuthenticatedAccessEndedRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/chat': typeof AuthenticatedChatRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/access-ended': typeof AccessEndedRoute
-  '/admin': typeof AdminRoute
-  '/chat': typeof ChatRoute
-  '/dashboard': typeof DashboardRoute
+  '/_authenticated/access-ended': typeof AuthenticatedAccessEndedRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/access-ended' | '/admin' | '/chat' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/access-ended' | '/admin' | '/chat' | '/dashboard'
-  id: '__root__' | '/' | '/access-ended' | '/admin' | '/chat' | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated/access-ended'
+    | '/_authenticated/admin'
+    | '/_authenticated/chat'
+    | '/_authenticated/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccessEndedRoute: typeof AccessEndedRoute
-  AdminRoute: typeof AdminRoute
-  ChatRoute: typeof ChatRoute
-  DashboardRoute: typeof DashboardRoute
+  AuthenticatedAccessEndedRoute: typeof AuthenticatedAccessEndedRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -88,32 +95,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/access-ended': {
-      id: '/access-ended'
+    '/_authenticated/access-ended': {
+      id: '/_authenticated/access-ended'
       path: '/access-ended'
       fullPath: '/access-ended'
-      preLoaderRoute: typeof AccessEndedRouteImport
+      preLoaderRoute: typeof AuthenticatedAccessEndedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat': {
-      id: '/chat'
+    '/_authenticated/chat': {
+      id: '/_authenticated/chat'
       path: '/chat'
       fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
+      preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -121,10 +128,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccessEndedRoute: AccessEndedRoute,
-  AdminRoute: AdminRoute,
-  ChatRoute: ChatRoute,
-  DashboardRoute: DashboardRoute,
+  AuthenticatedAccessEndedRoute: AuthenticatedAccessEndedRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

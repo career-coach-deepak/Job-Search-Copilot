@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { computeAccessStatus, type AccessStatus } from "@/lib/access";
 import { demoClients } from "@/lib/demo-data";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin — Job Search Copilot" },
