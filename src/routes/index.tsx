@@ -109,6 +109,11 @@ function SignIn() {
               <button className="btn-primary w-full" disabled={busy}>
                 {busy ? "Sending…" : "Email me a sign-in link"}
               </button>
+              {error && (
+                <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                  {error}
+                </p>
+              )}
               <p className="pt-2 text-xs text-muted-foreground">
                 No password needed. New accounts can't be created here — Coach Deepak invites clients directly.
               </p>
