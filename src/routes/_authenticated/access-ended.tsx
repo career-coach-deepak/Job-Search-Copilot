@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Brand } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,11 @@ export const Route = createFileRoute("/_authenticated/access-ended")({
   component: AccessEnded,
 });
 
-const copy: Record<AccessStatus | "none", { title: string; body: string }> = {
+// Every reason a signed-in person may not use the Copilot ("active" is handled
+// by the loader, which sends those people to the dashboard).
+type AccessReason = Exclude<AccessStatus, "active"> | "none";
+
+const copy: Record<AccessReason, { title: string; body: string }> = {
   none: {
     title: "No access record yet",
     body: "We've signed you in, but your email isn't on Coach Deepak's client list yet. Ask him to add you and try again.",
@@ -47,7 +51,8 @@ const copy: Record<AccessStatus | "none", { title: string; body: string }> = {
 function AccessEnded() {
   const { data: view } = useMyAccess();
   const queryClient = useQueryClient();
-  const why: AccessStatus | "none" = view?.kind === "record" ? view.status : "none";
+  const why: AccessReason =
+    view?.kind === "record" && view.status !== "active" ? view.status : "none";
   const message = copy[why];
 
   async function signOut() {
