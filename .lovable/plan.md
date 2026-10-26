@@ -74,11 +74,11 @@ CREATE TABLE public.profiles (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+REVOKE ALL ON public.profiles FROM anon, authenticated;
 GRANT SELECT ON public.profiles TO authenticated;
 GRANT UPDATE (display_name, avatar_url, preferences)
   ON public.profiles TO authenticated;
 GRANT ALL ON public.profiles TO service_role;
-REVOKE ALL ON public.profiles FROM anon;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "owners read profile" ON public.profiles
