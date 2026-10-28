@@ -81,9 +81,10 @@ export const setupClient = createServerFn({ method: "POST" })
     if (!existing) {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const origin = getRequestHeader("origin") ?? undefined;
-      const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
-        redirectTo: origin ? `${origin}/dashboard` : undefined,
-      });
+      const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+        data.email,
+        origin ? { redirectTo: `${origin}/dashboard` } : {},
+      );
       if (!error) invite = "sent";
       else if (/already been registered|already exists/i.test(error.message)) invite = "existing";
       else {
