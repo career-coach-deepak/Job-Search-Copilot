@@ -177,6 +177,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_client_conversations: { Args: never; Returns: number }
       has_active_access: { Args: { _user_id: string }; Returns: boolean }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
