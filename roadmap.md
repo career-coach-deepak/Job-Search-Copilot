@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Prevent conversation-loading failures from replacing the entire Copilot page; regression-test server access checks.
+- [ ] Verify the reported Copilot failure in the user's signed-in session (external Supabase session unavailable).
+
 - [x] Foundation: sign-in, access table, RLS, profiles, admin table.
 - [x] Live admin client management (invite/renew, extend, suspend, reactivate, revoke) — built; needs signed-in check by coach.
 - [ ] Verify admin vs client route protection end-to-end (needs a test client account).
