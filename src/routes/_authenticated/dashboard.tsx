@@ -11,6 +11,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { name: "description", content: "Your coaching program and your Copilot." },
       { property: "og:title", content: "Dashboard — Job Search Copilot" },
       { property: "og:description", content: "Your coaching program and your Copilot." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: async ({ context }) => {

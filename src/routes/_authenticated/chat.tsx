@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/chat")({
       { name: "description", content: "Chat with your job-search Copilot." },
       { property: "og:title", content: "Copilot — Job Search Copilot" },
       { property: "og:description", content: "Chat with your job-search Copilot." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: async ({ context }) => {
