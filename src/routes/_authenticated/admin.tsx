@@ -16,6 +16,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "description", content: "Manage client access to the Copilot." },
       { property: "og:title", content: "Admin — Job Search Copilot" },
       { property: "og:description", content: "Manage client access to the Copilot." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   // Admin rights alone open this page; no client program is needed.

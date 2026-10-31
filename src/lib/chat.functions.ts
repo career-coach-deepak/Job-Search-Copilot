@@ -1,6 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+import { hasAccess } from "@/lib/access";
 
 /*
  * Chat tables are deliberately not reachable from the browser (no grants for
@@ -15,11 +18,21 @@ const SYSTEM_PROMPT = `You are the Job Search Copilot by Coach Deepak, a warm, p
 Help clients with resumes, job-description analysis, LinkedIn profiles, networking, outreach messages and job-search plans.
 Be specific and actionable, ask a clarifying question when the request is vague, and never invent facts about the client's experience.`;
 
-type Ctx = { supabase: any; userId: string };
+type Ctx = { supabase: SupabaseClient<Database>; userId: string };
 
 async function requireActive({ supabase, userId }: Ctx) {
-  const { data, error } = await supabase.rpc("has_active_access", { _user_id: userId });
-  if (error || data !== true) throw new Error("Your Copilot access is not active.");
+  const { data, error } = await supabase
+    .from("client_access")
+    .select("status, starts_at, ends_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) {
+    console.error("Copilot access lookup failed", error.code);
+    throw new Error("Could not check your Copilot access. Please try again.");
+  }
+  if (!data || !hasAccess({ status: data.status, startsAt: data.starts_at, endsAt: data.ends_at })) {
+    throw new Error("Your Copilot access is not active.");
+  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
@@ -37,8 +50,11 @@ export const listConversations = createServerFn({ method: "GET" })
       .eq("user_id", context.userId)
       .order("updated_at", { ascending: false })
       .limit(100);
-    if (error) throw new Error("Could not load your conversations.");
-    return data.map((c) => ({ id: c.id, title: c.title, updatedAt: c.updated_at }));
+    if (error) {
+      console.error("Copilot conversation lookup failed", error.code);
+      throw new Error("Could not load your conversations. Please try again.");
+    }
+    return (data ?? []).map((c) => ({ id: c.id, title: c.title, updatedAt: c.updated_at }));
   });
 
 export const getMessages = createServerFn({ method: "GET" })

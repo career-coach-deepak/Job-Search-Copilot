@@ -4,6 +4,7 @@ import { queryOptions, useMutation, useQuery, useQueryClient, useSuspenseQuery }
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
+import { Button } from "@/components/ui/button";
 import { accessQueryOptions, isBlocked } from "@/hooks/use-access";
 import { getMessages, listConversations, sendMessage, type ChatMessage } from "@/lib/chat.functions";
 
@@ -19,12 +20,13 @@ export const Route = createFileRoute("/_authenticated/chat")({
       { name: "description", content: "Chat with your job-search Copilot." },
       { property: "og:title", content: "Copilot — Job Search Copilot" },
       { property: "og:description", content: "Chat with your job-search Copilot." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: async ({ context }) => {
     const view = await context.queryClient.ensureQueryData(accessQueryOptions);
     if (isBlocked(view)) throw redirect({ to: view.isAdmin ? "/admin" : "/access-ended" });
-    await context.queryClient.ensureQueryData(conversationsQuery);
   },
   component: Chat,
 });
@@ -34,7 +36,8 @@ function Chat() {
   const navigate = useNavigate({ from: "/chat" });
   const qc = useQueryClient();
   const { data: view } = useSuspenseQuery(accessQueryOptions);
-  const { data: conversations } = useSuspenseQuery(conversationsQuery);
+  const conversationList = useQuery({ ...conversationsQuery, retry: false });
+  const conversations = conversationList.data ?? [];
   const messages = useQuery({ ...messagesQuery(activeId ?? ""), enabled: Boolean(activeId) });
   const send = useServerFn(sendMessage);
   const [text, setText] = useState("");
@@ -83,7 +86,14 @@ function Chat() {
             New conversation
           </button>
           <nav className="mt-3 flex-1 space-y-1 overflow-y-auto">
-            {conversations.length === 0 && <p className="px-2 py-3 text-xs text-muted-foreground">No conversations yet.</p>}
+            {conversationList.isPending && <p className="px-2 py-3 text-xs text-muted-foreground">Loading conversations…</p>}
+            {conversationList.isError && (
+              <div className="space-y-2 px-2 py-3">
+                <p role="alert" className="text-sm text-destructive">Could not load your conversations. Please try again.</p>
+                <Button variant="outline" size="sm" onClick={() => void conversationList.refetch()}>Try again</Button>
+              </div>
+            )}
+            {conversationList.isSuccess && conversations.length === 0 && <p className="px-2 py-3 text-xs text-muted-foreground">No conversations yet.</p>}
             {conversations.map((c) => (
               <button
                 key={c.id}
@@ -104,6 +114,7 @@ function Chat() {
               </p>
             )}
             {messages.isLoading && <p className="text-center text-sm text-muted-foreground">Loading conversation…</p>}
+            {messages.isError && <p role="alert" className="text-sm text-destructive">Could not load this conversation. Please try again.</p>}
             {list.map((m) => <Bubble key={m.id} role={m.role} content={m.content} />)}
             {pending && (
               <>

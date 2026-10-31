@@ -12,6 +12,8 @@ export const Route = createFileRoute("/_authenticated/access-ended")({
       { name: "description", content: "Your Copilot access is not currently active." },
       { property: "og:title", content: "Access ended — Job Search Copilot" },
       { property: "og:description", content: "Your Copilot access is not currently active." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: async ({ context }) => {
